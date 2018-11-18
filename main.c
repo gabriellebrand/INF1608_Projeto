@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include <math.h>
+#include "FileManager.h"
 
 typedef struct ct {
 	unsigned char * data;
@@ -12,46 +12,6 @@ typedef struct ct {
 
 //estrutura para guardar os valores do CT scan
 static CT scan;
-
-unsigned char* readScanFile (char * path, size_t fileSize) {
-	FILE *fp;
-	unsigned char *buffer;
-
-	buffer = (unsigned char *)malloc(sizeof(char)*fileSize);
-
-	fp = fopen(path, "r");
-
-	if (fp) {
-		if (fread(buffer, sizeof(char), fileSize, fp) == fileSize) {
-			return buffer;
-		}
-	}
-
-	printf("Ocorreu um erro na leitura do arquivo.");
-		return NULL;
-}
-
-void writePGMFile(double * values, int width, int height) {
-	FILE *vriOutput;
-	int maxColorValue = 255, i, k;
-
-	vriOutput = fopen( "vriOutput.pgm" , "w");
-
-	if (vriOutput) {
-		//cabeçalho
-		fprintf(vriOutput, "P2\n%d %d\n%d\n", width, height, maxColorValue); 
-
-		//valores
-		for (i = 0; i < height; i++) {
-			for (k = 0; k < width; k++) {
-				fprintf(vriOutput, "%d ", (unsigned char)(255*values[i*width + k]));
-			}
-			fprintf(vriOutput, "\n");
-		}
-
-		fclose(vriOutput);
-	}
-}
 
 //raio é uma reta parametrica definida por um vetor de origem e um vetor direção
 // (ox, oy, oz) + t*(dx, dy, dz)
@@ -72,6 +32,7 @@ double simpson (double (*f) (double), double a, double b, double h) {
 }
 
 //recebe o indice calculado pela função do raio
+//retorna a densidade na posicao r do volume do CT scan
 double density(int r) {
 	return (double) scan.data[r];
 }
@@ -98,7 +59,6 @@ double exponentFunction(double s, double h) {
 //Função de renderização volumétrica
 double volumeRender(s, h) {
 	double d = density(s);
-
 	return tauDt(d)*exp(-(exponentFunction(s, h)));
 }
 
@@ -109,13 +69,13 @@ int main () {
 	scan.nx = 256;
 	scan.ny = 256;
 	scan.nz = 99;
-	scan.data = readScanFile("vridados-head-8bit.raw", scan.nx*scan.ny*scan.nz);
+	scan.data = FM_readScanFile("vridados-head-8bit.raw", scan.nx*scan.ny*scan.nz);
 
 	// for (int i = 0; i < fileSize; i++) {
 	// 	printf("%d \n", scanData[i]);
 	// }
 
-	writePGMFile(test, 4, 2);
+	FM_writePGMFile(test, 4, 2);
 
 	return 0;
 }
