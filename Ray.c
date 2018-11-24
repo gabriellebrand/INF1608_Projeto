@@ -1,5 +1,6 @@
 #include "Ray.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 static unsigned int _nx;
 static unsigned int _ny;
@@ -29,11 +30,13 @@ void Ray_setDirection(int dx, int dy, int dz) {
 // (ox, oy, oz) + t*(dx, dy, dz)
 //retorna o indice do volume dado um t
 //@TODO: interpolar valor (para o caso de t nao ser inteiro)
-int Ray_trace(int* origin, int* direction, double t) {
+int Ray_trace(double t) {
 	int i, j, k;
 	i = _origin[0] + t*_direction[0];
 	j = _origin[1] + t*_direction[1];
 	k = _origin[2] + t*_direction[2];
+
+	//printf("i= %d, j=%d, k = %d\n", i, j, k);
 
 	return k*_nx*_ny + j*_nx + i;
 }

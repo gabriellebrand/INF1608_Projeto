@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
 #include "Simpson.h"
 #include "Ray.h"
 
@@ -6,7 +8,27 @@
 //fazer simpson com passo fixo e passo adaptativo
 //será necessário adaptar o simpson para calcular o índice a partir da função ray
 double simpson (double (*f) (double), double a, double b, double h) {
-	return 0.0;
+	double sum, ti, tj;
+	double fti, ftj;
+
+	ti = a;
+	tj = ti + h;
+	sum = 0.0;
+
+	fti = f(ti);
+
+	//printf("simpson a = %.2f b = %.2f", a, b);
+	while (tj <= b)
+	{
+		ftj = f(tj);
+		sum += (h / 6.0) * (fti + 4.0*f((ti + tj) / 2.0) + ftj);
+
+		fti = ftj;
+		ti += h;
+		tj += h;
+	}
+
+	return sum;
 }
 
 double simpsonN(double(*f) (double), double a, double b, int n)

@@ -17,7 +17,7 @@ unsigned char* FM_readScanFile (char * path, size_t fileSize) {
 		}
 	}
 
-	printf("Ocorreu um erro na leitura do arquivo.");
+	printf("Ocorreu um erro na leitura do arquivo.\n");
 		return NULL;
 }
 
