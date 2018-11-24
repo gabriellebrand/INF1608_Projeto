@@ -59,6 +59,7 @@ double outerIntegral(int oi, int oj, int ok, int L) {
 	return s;
 }
 
+//normaliza valores entre 0 e 1
 void normalizeValues(unsigned int size, double * values) {
 	double max = 0.0;
 	int i;
@@ -91,19 +92,17 @@ void renderVisualization(char * filename, unsigned int * dimensions) {
 
 	printf("end - set ray dimensions\n");
 
-	for (i = 0; i < _scan.nx/2; i++) {
-		for (k = 0; k < _scan.nz; k++) {
+	for (k = 0; k < _scan.nz; k++) {
+		for (i = 0; i < _scan.nx/2; i++) {
 			//printf("i = %d, k = %d\n", i, k);
 			value1 = outerIntegral(2*i, 0, k, _scan.ny - 1);
 			value2 = outerIntegral(2*i+1, 0, k, _scan.ny - 1);
-			result[_scan.nx*i/2 + k] = (value1 + value2)/2.0;
+			result[_scan.nx*k/2 + i] = (value1 + value2)/2.0;
 		}
 	}
 
 	printf("end - integral\n");
 
-	//@TODO: normalizar valores de result entre 0 e 1
 	normalizeValues(bufferSize, result);
-	//@TODO: gerar imagem PGM
 	FM_writePGMFile(result, _scan.nx/2, _scan.nz);
 }

@@ -32,9 +32,9 @@ void FM_writePGMFile(double * values, int width, int height) {
 		fprintf(vriOutput, "P2\n%d %d\n%d\n", width, height, maxColorValue); 
 
 		//valores
-		for (i = 0; i < height; i++) {
-			for (k = 0; k < width; k++) {
-				fprintf(vriOutput, "%d ", (unsigned char)(255*values[i*width + k]));
+		for (k = 0; k < height; k++) {
+			for (i = 0; i < width; i++) {
+				fprintf(vriOutput, "%d ", (unsigned char)(255*values[k*width + i]));
 			}
 			fprintf(vriOutput, "\n");
 		}
