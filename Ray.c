@@ -26,17 +26,15 @@ void Ray_setDirection(int dx, int dy, int dz) {
 	_direction[2] = dz;
 }
 
-//raio é uma reta parametrica definida por um vetor de origem e um vetor direção
+// raio é uma reta parametrica definida por um vetor de origem e um vetor direção
 // (ox, oy, oz) + t*(dx, dy, dz)
-//retorna o indice do volume dado um t
-//@TODO: interpolar valor (para o caso de t nao ser inteiro)
+// retorna o indice do volume dado um t
+// @TODO: interpolar valor (para o caso de t nao ser inteiro)
 int Ray_trace(double t) {
 	int i, j, k;
 	i = _origin[0] + t*_direction[0];
 	j = _origin[1] + t*_direction[1];
 	k = _origin[2] + t*_direction[2];
-
-	//printf("i= %d, j=%d, k = %d\n", i, j, k);
 
 	return k*_nx*_ny + j*_nx + i;
 }

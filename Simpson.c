@@ -6,7 +6,6 @@
 
 //@TODO
 //fazer simpson com passo fixo e passo adaptativo
-//será necessário adaptar o simpson para calcular o índice a partir da função ray
 double simpson (double (*f) (double), double a, double b, double h) {
 	double sum, ti, tj;
 	double fti, ftj;
@@ -17,7 +16,6 @@ double simpson (double (*f) (double), double a, double b, double h) {
 
 	fti = f(ti);
 
-	//printf("simpson a = %.2f b = %.2f", a, b);
 	while (tj <= b)
 	{
 		ftj = f(tj);

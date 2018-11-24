@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 typedef struct ct {
-	unsigned char * data;
+	double * data;
 	size_t nx;
 	size_t ny;
 	size_t nz;
