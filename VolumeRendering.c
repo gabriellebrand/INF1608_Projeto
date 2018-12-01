@@ -10,7 +10,7 @@
 static CT _scan;
 
 //passo de integração
-static double _h = 4;
+static double _h = 4.5;
 
 //funcao de transferência
 double transferFunction(double v) {
@@ -28,7 +28,19 @@ double density(int r) {
 
 //τ(d(t))
 double tauDt(double t) {
-	double d = density(Ray_trace(t));
+	//faz a interpolação e entre duas densidades
+	int floor, ceil;
+	double dFloor, dCeil, p, d;
+
+	floor = (int)t;
+	ceil = floor + 1;
+	p = t - (double)floor;
+
+	dFloor = density(Ray_trace(floor));
+	dCeil = density(Ray_trace(ceil));
+
+	d = (1.0 - p)*dFloor + p*dCeil;
+
 	return transferFunction(d);
 }
 
