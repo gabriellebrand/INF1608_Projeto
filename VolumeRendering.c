@@ -32,15 +32,22 @@ double tauDt(double t) {
 	//faz a interpolação e entre duas densidades
 	int floor, ceil;
 	double dFloor, dCeil, p, d;
-
 	floor = (int)t;
-	ceil = floor + 1;
+	ceil = floor + 1.0;
 	p = t - (double)floor;
 
-	dFloor = density(Ray_trace(floor));
-	dCeil = density(Ray_trace(ceil));
+	/*se o p for zero, o valor é "inteiro" e não é necessário interpolar
+	  essa verificação é necessária para evitar que ocorra um seg fault
+	  quando o t corresponde a ultima amostra */
+	if (p <= 1.11e-16) {
+		d = density(Ray_trace(floor));
+	}
+	else {
+		dFloor = density(Ray_trace(floor));
+		dCeil = density(Ray_trace(ceil));
 
-	d = (1.0 - p)*dFloor + p*dCeil;
+		d = (1.0 - p)*dFloor + p*dCeil;
+	}
 
 	return transferFunction(d);
 }
@@ -48,7 +55,7 @@ double tauDt(double t) {
 //calcula integral do expoente da função de renderização
 // int(τ(d(t))dt) de 0 até s
 double innerIntegral(double s) {
-	return simpson(&tauDt, 0.0, s, _h);
+	return AdaptiveSimpson(0.0, s, &tauDt, 1e-3); //simpson(&tauDt, 0.0, s, _h);
 }
 
 //Função de renderização volumétrica
@@ -61,7 +68,7 @@ double renderingFunction(double s) {
 double outerIntegral(int oi, int oj, int ok, int L) {
 	Ray_setOrigin(oi, oj, ok);
 
-	double s = simpson(&renderingFunction, 0.0, L, _h);
+	double s = AdaptiveSimpson(0.0, L, &renderingFunction, 1e-3); //simpson(&renderingFunction, 0.0, L, _h);
 	return s;
 }
 

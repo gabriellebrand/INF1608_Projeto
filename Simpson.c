@@ -29,71 +29,37 @@ double simpson (double (*f) (double), double a, double b, double h) {
 	return sum;
 }
 
-//esse simpson adaptativo está mais rápido do que o anterior
-double DoubleSimpson (double a, double b, double (*f) (double x), double* v) {
-	double error = 0, h = b-a, c = (a+b)/2.;
-	double fx, fx_2, fa, fb, fc;
+double DoubleSimpson(double a, double b, double(*f) (double x), double* v)
+{
+	double erro, sab, sac, scb, c;
+	double fa, fb, fc;
+
+	c = (b + a) / 2.0;
 	fa = f(a);
 	fb = f(b);
 	fc = f(c);
-	
-	//fx = S[a,b]
-	//fx_2 = S[a,c] + S[c,b]
-	
-	fx = (h/6.)*(fa + 4.*fc + fb);
-	fx_2 = (h/12.)*(fa + 4.*(f((a+c)/2.) + f((c+b)/2.)) + 2.*fc + fb);
-	
-	error = fabs(fx - fx_2)/15.;
-	*v = fx_2 - error;
-	
-	return error;
+
+	sab = ((b - a) / 6.0) * (fa + 4*fc + fb);
+	sac = ((c - a) / 6.0) * (fa + 4*f((c+a)/2.0) + fc);
+	scb = ((b - c) / 6.0) * (fc + 4*f((c+b)/2.0) + fb);
+	erro = fabs(sab - sac - scb) / 15.0;
+
+	*v = sac + scb - erro;
+	return erro;
 }
 
-double AdaptiveSimpson (double a, double b, double (*f) (double x), double tol) {
-	double res, error, m;
-	
-	m = (a+b)/2.;
-	error = DoubleSimpson(a, b, f, &res);
+double AdaptiveSimpson(double a, double b, double(*f) (double x), double tol)
+{
+	double v, erro;
+	double c;
 
-	if (error > 15.0*tol)
-		 return AdaptiveSimpson(a, m, f, tol/2.) + AdaptiveSimpson(m, b, f, tol/2.);
-	else
-		return res;
+	erro = DoubleSimpson(a, b, f, &v);
+	c = (a + b) / 2.0;
+
+	if (erro <= tol)
+	{
+		return v;
+	}
+
+	return AdaptiveSimpson(a, c, f, tol) + AdaptiveSimpson(c, b, f, tol/2.0);
 }
-
-
-// double simpsonSimples(double a, double b, double(*f) (double x))
-// {
-// 	return ((b - a) / 6.0) * (f(a) + 4 * f((a + b) / 2.0) + f(b));
-// }
-
-// double DoubleSimpson(double a, double b, double(*f) (double x), double* v)
-// {
-// 	double erro, sab, sac, scb, c;
-
-// 	c = (b + a) / 2.0;
-
-// 	sab = simpsonSimples(a, b, f);
-// 	sac = simpsonSimples(a, c, f);
-// 	scb = simpsonSimples(c, b, f);
-// 	erro = fabs(sab - sac - scb) / 15.0;
-
-// 	*v = sac + scb - erro;
-// 	return erro;
-// }
-
-// double AdaptiveSimpson(double a, double b, double(*f) (double x), double tol)
-// {
-// 	double v, erro;
-// 	double c;
-
-// 	erro = DoubleSimpson(a, b, f, &v);
-// 	c = (a + b) / 2.0;
-
-// 	if (erro <= tol)
-// 	{
-// 		return v;
-// 	}
-
-// 	return AdaptiveSimpson(a, c, f, tol) + AdaptiveSimpson(c, b, f, tol);
-// }
