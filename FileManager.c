@@ -9,7 +9,7 @@ unsigned char* FM_readScanFile (char * path, size_t fileSize) {
 
 	buffer = (unsigned char *)malloc(sizeof(char)*fileSize);
 
-	fp = fopen(path, "r");
+	fp = fopen(path, "rb");
 
 	if (fp) {
 		if (fread(buffer, sizeof(char), fileSize, fp) == fileSize) {

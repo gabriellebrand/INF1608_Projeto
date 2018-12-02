@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 //estrutura para guardar os valores do CT scan
 static CT _scan;
@@ -95,6 +96,8 @@ void renderVisualization(char * filename, unsigned int * dimensions) {
 	unsigned char *input;
 	double *result;
 	double value1, value2;
+	clock_t start_t, end_t;
+	double total_t;
 
 	printf("fazendo leitura do arquivo...\n");
 	outputSize = dimensions[0]*dimensions[2]/2;
@@ -113,6 +116,10 @@ void renderVisualization(char * filename, unsigned int * dimensions) {
 	Ray_setDimensions(_scan.nx, _scan.ny, _scan.nz);
 
 	result = (double*)malloc(sizeof(double)*outputSize);
+
+	start_t = clock();
+	printf("start_t = %ld\n", start_t);
+
 	printf("calculando integral...\n");
 	for (k = 0; k < _scan.nz; k++) {
 		for (i = 0; i < _scan.nx/2; i++) {
@@ -121,6 +128,11 @@ void renderVisualization(char * filename, unsigned int * dimensions) {
 			result[_scan.nx*k/2 + i] = (value1 + value2)/2.0;
 		}
 	}
+
+	end_t = clock();
+	printf("end_t = %ld\n", end_t);
+	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+	printf("Tempo total: %f\n", total_t);
 
 	printf("gerando arquivo de saída...\n");
 	normalizeValues(outputSize, result);
