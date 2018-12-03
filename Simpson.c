@@ -4,9 +4,7 @@
 #include "Simpson.h"
 #include "Ray.h"
 
-//@TODO
-//fazer simpson com passo fixo e passo adaptativo
-double simpson (double (*f) (double), double a, double b, double h) {
+double Simpson_simpson (double (*f) (double), double a, double b, double h) {
 	double sum, ti, tj;
 	double fti, ftj;
 
@@ -29,7 +27,7 @@ double simpson (double (*f) (double), double a, double b, double h) {
 	return sum;
 }
 
-double DoubleSimpson(double a, double b, double(*f) (double x), double* v)
+double doubleSimpson(double a, double b, double(*f) (double x), double* v)
 {
 	double erro, sab, sac, scb, c;
 	double fa, fb, fc;
@@ -42,18 +40,18 @@ double DoubleSimpson(double a, double b, double(*f) (double x), double* v)
 	sab = ((b - a) / 6.0) * (fa + 4*fc + fb);
 	sac = ((c - a) / 6.0) * (fa + 4*f((c+a)/2.0) + fc);
 	scb = ((b - c) / 6.0) * (fc + 4*f((c+b)/2.0) + fb);
-	erro = fabs(sab - sac - scb) / 15.0;
+	erro = (sab - sac - scb) / 15.0;
 
 	*v = sac + scb - erro;
-	return erro;
+	return fabs(erro);
 }
 
-double AdaptiveSimpson(double a, double b, double(*f) (double x), double tol)
+double Simpson_adaptiveSimpson(double a, double b, double(*f) (double x), double tol)
 {
 	double v, erro;
 	double c;
 
-	erro = DoubleSimpson(a, b, f, &v);
+	erro = doubleSimpson(a, b, f, &v);
 	c = (a + b) / 2.0;
 
 	if (erro <= tol)
@@ -61,5 +59,5 @@ double AdaptiveSimpson(double a, double b, double(*f) (double x), double tol)
 		return v;
 	}
 
-	return AdaptiveSimpson(a, c, f, tol) + AdaptiveSimpson(c, b, f, tol/2.0);
+	return Simpson_adaptiveSimpson(a, c, f, tol/2.0) + Simpson_adaptiveSimpson(c, b, f, tol/2.0);
 }

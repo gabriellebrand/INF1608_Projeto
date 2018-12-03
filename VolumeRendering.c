@@ -38,7 +38,7 @@ double tauDt(double t) {
 
 	/*se o p for zero, o valor é "inteiro" e não é necessário interpolar
 	  essa verificação é necessária para evitar que ocorra um seg fault
-	  quando o t corresponde a ultima amostra */
+	  no adaptativo quando o t corresponde a ultima amostra */
 	if (p <= 1.11e-16) {
 		d = density(Ray_trace(floor));
 	}
@@ -55,7 +55,7 @@ double tauDt(double t) {
 //calcula integral do expoente da função de renderização
 // int(τ(d(t))dt) de 0 até s
 double innerIntegral(double s) {
-	return AdaptiveSimpson(0.0, s, &tauDt, 1e-3); //simpson(&tauDt, 0.0, s, _h);
+	return Simpson_adaptiveSimpson(0.0, s, &tauDt, 1e-3); //Simpson_simpson(&tauDt, 0.0, s, _h);
 }
 
 //Função de renderização volumétrica
@@ -68,7 +68,7 @@ double renderingFunction(double s) {
 double outerIntegral(int oi, int oj, int ok, int L) {
 	Ray_setOrigin(oi, oj, ok);
 
-	double s = AdaptiveSimpson(0.0, L, &renderingFunction, 1e-3); //simpson(&renderingFunction, 0.0, L, _h);
+	double s = Simpson_adaptiveSimpson(0.0, L, &renderingFunction, 1e-3); //Simpson_simpson(&renderingFunction, 0.0, L, _h);
 	return s;
 }
 
@@ -98,7 +98,7 @@ double * getDoubleData(unsigned char * values, unsigned int size) {
 	return out;
 }
 
-void renderVisualization(char * filename, unsigned int * dimensions) {
+void VR_renderVisualization(char * filename, unsigned int * dimensions) {
 	unsigned int i, k, outputSize, fileSize;
 	unsigned char *input;
 	double *result;
@@ -124,10 +124,8 @@ void renderVisualization(char * filename, unsigned int * dimensions) {
 
 	result = (double*)malloc(sizeof(double)*outputSize);
 
-	start_t = clock();
-	printf("start_t = %ld\n", start_t);
-
 	printf("calculando integral...\n");
+	start_t = clock();
 	for (k = 0; k < _scan.nz; k++) {
 		for (i = 0; i < _scan.nx/2; i++) {
 			value1 = outerIntegral(2*i, 0, k, _scan.ny - 1);
@@ -135,8 +133,8 @@ void renderVisualization(char * filename, unsigned int * dimensions) {
 			result[_scan.nx*k/2 + i] = (value1 + value2)/2.0;
 		}
 	}
-
 	end_t = clock();
+	printf("start_t = %ld\n", start_t);
 	printf("end_t = %ld\n", end_t);
 	total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
 	printf("Tempo total: %f\n", total_t);

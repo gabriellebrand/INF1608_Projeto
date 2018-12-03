@@ -7,4 +7,4 @@ typedef struct ct {
 	size_t nz;
 } CT;
 
-void renderVisualization(char * filename, unsigned int * volumeDimensions);
+void VR_renderVisualization(char * filename, unsigned int * volumeDimensions);
