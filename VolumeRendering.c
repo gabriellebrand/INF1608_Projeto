@@ -55,7 +55,7 @@ double tauDt(double t) {
 //calcula integral do expoente da função de renderização
 // int(τ(d(t))dt) de 0 até s
 double innerIntegral(double s) {
-	return Simpson_adaptiveSimpson(0.0, s, &tauDt, 1e-3); //Simpson_simpson(&tauDt, 0.0, s, _h);
+	return Simpson_simpson(&tauDt, 0.0, s, _h);
 }
 
 //Função de renderização volumétrica
@@ -68,7 +68,7 @@ double renderingFunction(double s) {
 double outerIntegral(int oi, int oj, int ok, int L) {
 	Ray_setOrigin(oi, oj, ok);
 
-	double s = Simpson_adaptiveSimpson(0.0, L, &renderingFunction, 1e-3); //Simpson_simpson(&renderingFunction, 0.0, L, _h);
+	double s = Simpson_simpson(&renderingFunction, 0.0, L, _h);
 	return s;
 }
 
